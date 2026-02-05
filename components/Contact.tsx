@@ -46,7 +46,11 @@ export default function Contact() {
         });
         setTimeout(() => setIsSubmitted(false), 5000);
       } else {
-        setError(data.error || "Something went wrong. Please try again.");
+        const errorMsg = data.error || "Something went wrong. Please try again.";
+        const details = data.details ? `\n\nDetails: ${data.details}` : '';
+        const hint = data.hint ? `\n\n💡 ${data.hint}` : '';
+        setError(errorMsg + details + hint);
+        console.error('Form submission error:', data);
       }
     } catch (err) {
       setError("Failed to send message. Please try contacting us directly.");

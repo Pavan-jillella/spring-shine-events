@@ -1,6 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
 
+// Verify environment variables are loaded
+console.log('🔧 Email Config Check:', {
+  emailUser: process.env.EMAIL_USER ? '✅ Set' : '❌ Missing',
+  emailPassword: process.env.EMAIL_PASSWORD ? '✅ Set' : '❌ Missing',
+  companyEmail: process.env.COMPANY_EMAIL ? '✅ Set' : '❌ Missing',
+});
+
 // Email configuration
 const transporter = nodemailer.createTransport({
   service: 'gmail', // You can use other services like 'outlook', 'yahoo', etc.
@@ -54,29 +61,39 @@ export async function POST(request: NextRequest) {
 
     // Email to company
     const companyMailOptions = {
-      from: process.env.EMAIL_USER,
+      from: {
+        name: 'Spring Shine Events',
+        address: process.env.EMAIL_USER || '',
+      },
       to: process.env.COMPANY_EMAIL || process.env.EMAIL_USER,
-      subject: `New Event Inquiry - ${body.eventType} from ${body.name}`,
+      subject: `🎉 New Event Inquiry - ${body.eventType} from ${body.name}`,
       html: `
         <!DOCTYPE html>
         <html>
         <head>
           <style>
-            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-            .header { background: linear-gradient(135deg, #f472b6 0%, #fb7185 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
-            .content { background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }
+            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; }
+            .container { max-width: 600px; margin: 0 auto; padding: 20px; background: #ffffff; }
+            .logo-header { background: #ffffff; padding: 20px; text-align: center; border-bottom: 3px solid #f472b6; }
+            .logo-img { max-width: 250px; height: auto; }
+            .header { background: linear-gradient(135deg, #f472b6 0%, #fb7185 100%); color: white; padding: 30px; text-align: center; }
+            .header h1 { margin: 0; font-size: 28px; }
+            .header p { margin: 10px 0 0 0; font-style: italic; opacity: 0.9; }
+            .content { background: #f9f9f9; padding: 30px; }
             .field { margin-bottom: 20px; }
             .field-label { font-weight: bold; color: #f472b6; margin-bottom: 5px; }
             .field-value { background: white; padding: 10px; border-radius: 5px; border-left: 3px solid #f472b6; }
-            .footer { text-align: center; margin-top: 20px; color: #666; font-size: 12px; }
+            .footer { text-align: center; margin-top: 20px; padding: 20px; color: #666; font-size: 12px; background: #f9f9f9; }
           </style>
         </head>
         <body>
           <div class="container">
+            <div class="logo-header">
+              <img src="cid:logo" alt="Spring Shine Events" class="logo-img" />
+            </div>
             <div class="header">
               <h1>New Event Inquiry</h1>
-              <p>Spring Shine Events</p>
+              <p>we make you celebrate</p>
             </div>
             <div class="content">
               <div class="field">
@@ -113,47 +130,66 @@ export async function POST(request: NextRequest) {
                 <div class="field-value">${body.message}</div>
               </div>
               ` : ''}
-              <div class="footer">
-                <p>This inquiry was submitted through Spring Shine Events website</p>
-                <p>Please respond within 24 hours</p>
-              </div>
+            </div>
+            <div class="footer">
+              <p><strong>Spring Shine Events</strong></p>
+              <p style="font-style: italic; color: #f472b6;">we make you celebrate</p>
+              <p>This inquiry was submitted through our website</p>
+              <p>Please respond within 24 hours</p>
             </div>
           </div>
         </body>
         </html>
       `,
+      attachments: [
+        {
+          filename: 'spring-shine-logo.png',
+          path: './public/spring-shine-logo.png',
+          cid: 'logo' // Referenced in the HTML as cid:logo
+        }
+      ]
     };
 
     // Auto-reply email to customer
     const customerMailOptions = {
-      from: process.env.EMAIL_USER,
+      from: {
+        name: 'Spring Shine Events',
+        address: process.env.EMAIL_USER || '',
+      },
       to: body.email,
-      subject: 'Thank You for Contacting Spring Shine Events!',
+      subject: '🎉 Thank You for Contacting Spring Shine Events!',
       html: `
         <!DOCTYPE html>
         <html>
         <head>
           <style>
-            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-            .header { background: linear-gradient(135deg, #f472b6 0%, #fb7185 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
-            .content { background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }
-            .logo { font-size: 32px; font-weight: bold; margin-bottom: 10px; }
-            .tagline { font-style: italic; font-size: 18px; opacity: 0.9; }
+            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; }
+            .container { max-width: 600px; margin: 0 auto; padding: 20px; background: #ffffff; }
+            .logo-header { background: #ffffff; padding: 20px; text-align: center; border-bottom: 3px solid #f472b6; }
+            .logo-img { max-width: 250px; height: auto; }
+            .header { background: linear-gradient(135deg, #f472b6 0%, #fb7185 100%); color: white; padding: 30px; text-align: center; }
+            .header h1 { margin: 0; font-size: 28px; }
+            .tagline { font-style: italic; font-size: 18px; opacity: 0.9; margin-top: 10px; }
+            .content { background: #f9f9f9; padding: 30px; }
             .message { background: white; padding: 20px; border-radius: 10px; margin: 20px 0; border-left: 4px solid #f472b6; }
             .details { background: white; padding: 15px; border-radius: 8px; margin: 15px 0; }
-            .contact-info { margin-top: 20px; }
-            .footer { text-align: center; margin-top: 20px; color: #666; font-size: 12px; }
+            .contact-info { margin-top: 20px; background: white; padding: 20px; border-radius: 8px; }
+            .contact-info h3 { color: #f472b6; margin-top: 0; }
+            .footer { text-align: center; margin-top: 20px; padding: 20px; color: #666; font-size: 12px; background: #f9f9f9; }
+            .footer .brand { font-weight: bold; color: #f472b6; font-size: 16px; }
           </style>
         </head>
         <body>
           <div class="container">
+            <div class="logo-header">
+              <img src="cid:logo" alt="Spring Shine Events" class="logo-img" />
+            </div>
             <div class="header">
-              <div class="logo">Spring Shine</div>
+              <h1>Thank You!</h1>
               <div class="tagline">we make you celebrate</div>
             </div>
             <div class="content">
-              <h2 style="color: #f472b6;">Thank You, ${body.name}!</h2>
+              <h2 style="color: #f472b6;">Dear ${body.name},</h2>
               <div class="message">
                 <p>We've received your inquiry and are excited to help make your ${body.eventType} event absolutely spectacular!</p>
                 <p>Our team will review your requirements and get back to you within 24 hours.</p>
@@ -167,26 +203,35 @@ export async function POST(request: NextRequest) {
               </div>
 
               <div class="contact-info">
-                <h3 style="color: #f472b6;">In the meantime, feel free to reach us:</h3>
+                <h3>In the meantime, feel free to reach us:</h3>
                 <p>📞 <strong>Phone:</strong> +1 (555) 123-4567</p>
                 <p>📧 <strong>Email:</strong> info@springshine.com</p>
-                <p>💬 <strong>WhatsApp:</strong> <a href="https://wa.me/1234567890" style="color: #f472b6;">Click to Chat</a></p>
+                <p>💬 <strong>WhatsApp:</strong> <a href="https://wa.me/1234567890" style="color: #f472b6; text-decoration: none;">Click to Chat</a></p>
               </div>
-
-              <div class="footer">
-                <p>Follow us on social media for inspiration and updates!</p>
-                <p style="margin-top: 10px;">
-                  <a href="#" style="color: #f472b6; margin: 0 10px;">Facebook</a> |
-                  <a href="#" style="color: #f472b6; margin: 0 10px;">Instagram</a> |
-                  <a href="#" style="color: #f472b6; margin: 0 10px;">Twitter</a>
-                </p>
-                <p style="margin-top: 15px;">&copy; 2026 Spring Shine Events. All rights reserved.</p>
-              </div>
+            </div>
+            
+            <div class="footer">
+              <div class="brand">Spring Shine Events</div>
+              <p style="font-style: italic; color: #f472b6; margin: 5px 0;">we make you celebrate</p>
+              <p style="margin-top: 15px;">Follow us on social media for inspiration and updates!</p>
+              <p style="margin-top: 10px;">
+                <a href="#" style="color: #f472b6; margin: 0 10px; text-decoration: none;">Facebook</a> |
+                <a href="#" style="color: #f472b6; margin: 0 10px; text-decoration: none;">Instagram</a> |
+                <a href="#" style="color: #f472b6; margin: 0 10px; text-decoration: none;">Twitter</a>
+              </p>
+              <p style="margin-top: 15px;">&copy; 2026 Spring Shine Events. All rights reserved.</p>
             </div>
           </div>
         </body>
         </html>
       `,
+      attachments: [
+        {
+          filename: 'spring-shine-logo.png',
+          path: './public/spring-shine-logo.png',
+          cid: 'logo' // Referenced in the HTML as cid:logo
+        }
+      ]
     };
 
     // Send emails
@@ -202,11 +247,31 @@ export async function POST(request: NextRequest) {
     );
 
   } catch (error) {
-    console.error('Error sending email:', error);
+    console.error('❌ Error sending email:', error);
+    
+    // More detailed error logging
+    if (error instanceof Error) {
+      console.error('Error name:', error.name);
+      console.error('Error message:', error.message);
+      console.error('Error stack:', error.stack);
+    }
+    
+    // Check if it's an authentication error
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    const isAuthError = errorMessage.toLowerCase().includes('auth') || 
+                        errorMessage.toLowerCase().includes('authentication') ||
+                        errorMessage.toLowerCase().includes('username') ||
+                        errorMessage.toLowerCase().includes('password');
+    
     return NextResponse.json(
       { 
-        error: 'Failed to send message. Please try again or contact us directly.',
-        details: error instanceof Error ? error.message : 'Unknown error'
+        error: isAuthError 
+          ? 'Email authentication failed. Please check your email credentials in .env.local'
+          : 'Failed to send message. Please try again or contact us directly.',
+        details: errorMessage,
+        hint: isAuthError 
+          ? 'Make sure you are using a Gmail App Password, not your regular password'
+          : 'Check the server console for more details'
       },
       { status: 500 }
     );

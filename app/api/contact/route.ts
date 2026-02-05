@@ -204,9 +204,9 @@ export async function POST(request: NextRequest) {
 
               <div class="contact-info">
                 <h3>In the meantime, feel free to reach us:</h3>
-                <p>📞 <strong>Phone:</strong> +1 (555) 123-4567</p>
-                <p>📧 <strong>Email:</strong> info@springshine.com</p>
-                <p>💬 <strong>WhatsApp:</strong> <a href="https://wa.me/1234567890" style="color: #f472b6; text-decoration: none;">Click to Chat</a></p>
+                <p>📞 <strong>Phone:</strong> +1 (410) 736-0765</p>
+                <p>📧 <strong>Email:</strong> udayreddy416@gmail.com</p>
+                <p>💬 <strong>WhatsApp:</strong> <a href="https://wa.me/14107360765" style="color: #f472b6; text-decoration: none;">Click to Chat</a></p>
               </div>
             </div>
             

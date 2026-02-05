@@ -263,7 +263,7 @@ export default function Contact() {
                   </div>
                   <div>
                     <h4 className="font-semibold mb-1">Phone</h4>
-                    <p className="text-white/90">+1 (555) 123-4567</p>
+                    <p className="text-white/90">+1 (410) 736-0765</p>
                   </div>
                 </div>
 
@@ -275,7 +275,7 @@ export default function Contact() {
                   </div>
                   <div>
                     <h4 className="font-semibold mb-1">Email</h4>
-                    <p className="text-white/90">info@springshine.com</p>
+                    <p className="text-white/90">udayreddy416@gmail.com</p>
                   </div>
                 </div>
 
@@ -298,7 +298,7 @@ export default function Contact() {
               <h3 className="text-xl font-bold text-gray-800 mb-4">Connect With Us</h3>
               
               <a
-                href="https://wa.me/1234567890"
+                href="https://wa.me/14107360765"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center justify-center space-x-2 bg-green-500 text-white py-3 rounded-lg hover:bg-green-600 transition-colors mb-4"

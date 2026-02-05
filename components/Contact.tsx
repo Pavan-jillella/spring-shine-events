@@ -14,12 +14,46 @@ export default function Contact() {
   });
 
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission logic here
-    setIsSubmitted(true);
-    setTimeout(() => setIsSubmitted(false), 3000);
+    setIsLoading(true);
+    setError("");
+
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setIsSubmitted(true);
+        setFormData({
+          name: "",
+          email: "",
+          phone: "",
+          eventType: "",
+          date: "",
+          guests: "",
+          message: "",
+        });
+        setTimeout(() => setIsSubmitted(false), 5000);
+      } else {
+        setError(data.error || "Something went wrong. Please try again.");
+      }
+    } catch (err) {
+      setError("Failed to send message. Please try contacting us directly.");
+      console.error("Form submission error:", err);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleChange = (
@@ -168,14 +202,31 @@ export default function Contact() {
 
               <button
                 type="submit"
-                className="w-full bg-gradient-to-r from-pink-400 to-rose-400 text-white py-4 rounded-lg font-semibold hover:shadow-lg transition-all duration-300 hover:scale-105"
+                disabled={isLoading}
+                className="w-full bg-gradient-to-r from-pink-400 to-rose-400 text-white py-4 rounded-lg font-semibold hover:shadow-lg transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
               >
-                Send Message
+                {isLoading ? (
+                  <span className="flex items-center justify-center">
+                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Sending...
+                  </span>
+                ) : (
+                  "Send Message"
+                )}
               </button>
 
               {isSubmitted && (
-                <div className="bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-lg">
-                  Thank you! We'll get back to you soon.
+                <div className="bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-lg animate-fade-in">
+                  ✅ Thank you! We've received your inquiry and will get back to you within 24 hours.
+                </div>
+              )}
+
+              {error && (
+                <div className="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-lg animate-fade-in">
+                  ❌ {error}
                 </div>
               )}
             </form>

@@ -20,13 +20,36 @@ A modern, dynamic event management website built with Next.js, React, TypeScript
 
 ## 🚀 Getting Started
 
-First, install dependencies:
+### 1. Install Dependencies
 
 ```bash
 npm install
 ```
 
-Then, run the development server:
+### 2. Configure Contact Form (Important!)
+
+The contact form requires email configuration. Follow these steps:
+
+1. **Copy the environment template:**
+   ```bash
+   cp .env.example .env.local
+   ```
+
+2. **Configure your email settings in `.env.local`:**
+   ```env
+   EMAIL_USER=your-email@gmail.com
+   EMAIL_PASSWORD=your-app-password
+   COMPANY_EMAIL=info@springshine.com
+   ```
+
+3. **For Gmail users:**
+   - Enable 2-Step Verification in your Google Account
+   - Generate an App Password at https://myaccount.google.com/apppasswords
+   - Use the 16-character app password in `.env.local`
+
+📖 **Detailed setup guide**: See [CONTACT_FORM_SETUP.md](./CONTACT_FORM_SETUP.md)
+
+### 3. Run the Development Server
 
 ```bash
 npm run dev
@@ -39,6 +62,14 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 ```
 spring_shine_events/
 ├── app/
+│   ├── api/
+│   │   └── contact/
+│   │       └── route.ts  # Contact form API endpoint
+│   ├── events/           # Individual event pages
+│   │   ├── weddings/
+│   │   ├── corporate/
+│   │   ├── birthday/
+│   │   └── social/
 │   ├── layout.tsx        # Root layout with Navbar and Footer
 │   ├── page.tsx          # Homepage with all sections
 │   └── globals.css       # Global styles and animations
@@ -50,10 +81,12 @@ spring_shine_events/
 │   ├── Stats.tsx         # Animated statistics
 │   ├── Gallery.tsx       # Filterable gallery
 │   ├── Testimonials.tsx  # Client testimonials
-│   ├── Contact.tsx       # Contact form
+│   ├── Contact.tsx       # Contact form with backend
 │   └── Footer.tsx        # Footer with links
-└── public/               # Static assets
-
+├── public/               # Static assets
+├── .env.local            # Environment variables (not in Git)
+├── .env.example          # Environment template
+└── CONTACT_FORM_SETUP.md # Email setup guide
 ```
 
 ## 🎨 Customization
@@ -81,6 +114,8 @@ Replace placeholder gradients in the Gallery component with actual event photos:
 - **TypeScript**: Type-safe development
 - **Tailwind CSS**: Utility-first CSS framework
 - **React Hooks**: Modern React patterns
+- **Nodemailer**: Email sending functionality
+- **Next.js API Routes**: Backend API for form handling
 
 ## 📦 Build for Production
 
@@ -91,21 +126,43 @@ npm start
 
 ## 🌐 Deployment
 
-Deploy easily on Vercel:
+### Deploy to Vercel (Recommended)
+
+1. **Push to GitHub** (if not already done):
+   ```bash
+   git add .
+   git commit -m "Add contact form backend"
+   git push
+   ```
+
+2. **Deploy on Vercel**:
+   - Visit [vercel.com](https://vercel.com) and sign in
+   - Import your GitHub repository
+   - Add environment variables:
+     - `EMAIL_USER`
+     - `EMAIL_PASSWORD`
+     - `COMPANY_EMAIL`
+   - Deploy!
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new)
 
-Or use other platforms like Netlify, AWS, or Digital Ocean.
+### Other Platforms
+
+You can also deploy to Netlify, AWS, or Digital Ocean. Remember to:
+- Set up environment variables in your hosting platform
+- Configure build command: `npm run build`
+- Set output directory: `.next`
 
 ## 📝 To-Do
 
 - [ ] Add actual event images to gallery
-- [ ] Integrate with a backend for form submissions
+- [x] ~~Integrate with a backend for form submissions~~ ✅ **Done!**
 - [ ] Add blog section for event tips
 - [ ] Implement CMS for easy content management
 - [ ] Add animations library (Framer Motion)
-- [ ] SEO optimization with metadata
+- [x] ~~SEO optimization with metadata~~ ✅ **Done!**
 - [ ] Add Google Analytics
+- [ ] Configure production email credentials
 
 ## 📄 License
 
